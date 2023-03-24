@@ -37,6 +37,15 @@ class UserService
     public function getUserFollowers($user_id)
     {
         $user_data = $this->userRepo->getUserFollowers($user_id);
+        foreach ($user_data->followers as $key => $d) {
+            $user_data->followers[$key]->is_followings = false;
+            foreach ($user_data->followings as $f) {
+                if ($f->id == $d->id) {
+                    $user_data->followers[$key]->is_followings = true;
+                    break;
+                } 
+            }
+        }
         return $user_data->followers;
     }
 

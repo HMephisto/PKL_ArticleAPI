@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'liked_article' => ArticleResource::collection($this->whenLoaded('likes')),
             'followers' => $this->followers_count,
             'following' => $this->followings_count,
+            'is_followings' => $this->is_followings,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -15,9 +15,11 @@ class UserRepository implements UserRepositoryInterface
     }
     public function getAllUser($request)
     {
-        return $this->users->when($request->search, function ($q) use ($request) {
+        $data = $this->users->when($request->search, function ($q) use ($request) {
             $q->where('username', 'ilike', "%$request->search%");
-        })->with('articles')->withCount(['followers', 'followings'])->simplePaginate($request->per_page ?? 15);
+        })->with(['articles', 'followings'])->withCount(['followers', 'followings'])->simplePaginate($request->per_page ?? 15);
+        
+        return $data;
     }
 
     public function getUserById($id)
@@ -29,18 +31,20 @@ class UserRepository implements UserRepositoryInterface
 
     public function getUserContent($id)
     {
-        return $this->users::with(['articles', 'liked_articles'])->findorfail($id);
+        return  $this->users::with(['articles', 'liked_articles'])->findorfail($id);
     }
 
     public function getUserFollowers($user_id)
     {
 
-        return $this->users::with('followers')->findorfail($user_id);
+        $data = $this->users::with(['followers', 'followings'])->findorfail($user_id);
+        return $data;
     }
 
     public function getUserFollowings($user_id)
     {
         return $this->users::with('Followings')->findorfail($user_id);
+        
     }
 
     public function createUser($userDetails)
